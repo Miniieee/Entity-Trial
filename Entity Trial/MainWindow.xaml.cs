@@ -73,7 +73,6 @@ namespace Entity_Trial
                 ctx.People.Add(person);
                 await ctx.SaveChangesAsync();
 
-                MessageBox.Show("Saved via EF Core!");
                 // Clear inputs
                 NameTextBox.Clear();
                 BirthdayPicker.SelectedDate = null;
@@ -85,5 +84,32 @@ namespace Entity_Trial
                 MessageBox.Show("Insert failed: " + ex.Message);
             }
         }
+
+        private async void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            var searchTerm = NameTextBox.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                MessageBox.Show("Please enter a name to search for.");
+                return;
+            }
+
+            try
+            {
+                using var ctx = new AppDbContext();
+                var results = await ctx.People
+                                       .Where(p => p.Name.Contains(searchTerm))
+                                       .OrderBy(p => p.Id)
+                                       .ToListAsync();
+
+                PeopleListBox.ItemsSource = results;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Search failed: " + ex.Message);
+            }
+        }
+
     }
 }

@@ -2,24 +2,28 @@
 using Microsoft.EntityFrameworkCore;
 using System.Configuration;
 
-public class AppDbContext : DbContext
+
+namespace Entity_Trial
 {
-    public DbSet<Person> People { get; set; } = null!;
-
-    protected override void OnConfiguring(DbContextOptionsBuilder options)
+    public class AppDbContext : DbContext
     {
-        // Read the "AppDb" conn string from App.config
-        var cs = ConfigurationManager
-                   .ConnectionStrings["AppDb"]!
-                   .ConnectionString!;
-        options.UseSqlServer(cs);
-    }
+        public DbSet<Person> People { get; set; } = null!;
 
-    protected override void OnModelCreating(ModelBuilder model)
-    {
-        model.Entity<Person>()
-             .Property(p => p.Name)
-             .IsRequired()
-             .HasMaxLength(100);
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        {
+            // Read the "AppDb" conn string from App.config
+            var cs = ConfigurationManager
+                       .ConnectionStrings["AppDb"]!
+                       .ConnectionString!;
+            options.UseSqlServer(cs);
+        }
+
+        protected override void OnModelCreating(ModelBuilder model)
+        {
+            model.Entity<Person>()
+                 .Property(p => p.Name)
+                 .IsRequired()
+                 .HasMaxLength(100);
+        }
     }
 }
