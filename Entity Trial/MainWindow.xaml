@@ -4,90 +4,460 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Entity_Trial"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <!-- Name -->
-            <RowDefinition Height="Auto"/>
-            <!-- Birthday -->
-            <RowDefinition Height="Auto"/>
-            <!-- Occupation -->
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <!-- Buttons -->
-            <RowDefinition Height="*"/>
-            <!-- ListBox -->
-        </Grid.RowDefinitions>
 
-        <!-- Name -->
-        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-            <Label Width="80">Name:</Label>
-            <TextBox x:Name="NameTextBox" Width="250"/>
+    <Window.Resources>
+        <!-- your primary accent color -->
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#2E5B6F"/>
+
+        <!-- Sidebar buttons -->
+        <Style x:Key="SidebarButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Height" Value="40"/>
+        </Style>
+
+        <!-- SELECT / ADD IMAGE buttons -->
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="MinWidth" Value="80"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="5,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                            CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Yes/No & Metric/Imperial toggle buttons -->
+        <Style x:Key="ToggleOptionStyle" TargetType="ToggleButton">
+            <Setter Property="MinWidth" Value="50"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="5,0,0,0"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="Gray"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource PrimaryBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- GroupBoxes with colored header and white content -->
+        <Style x:Key="HeaderedGroupBoxStyle" TargetType="GroupBox">
+            <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GroupBox">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Header -->
+                            <Border Background="{StaticResource PrimaryBrush}"
+                                CornerRadius="4,4,0,0"
+                                Padding="8,4">
+                                <Label Content="{TemplateBinding Header}"
+                                   Foreground="White"
+                                   FontWeight="Bold"
+                                   Background="Transparent"/>
+                            </Border>
+
+                            <!-- Content area -->
+                            <Border Grid.Row="1"
+                                Background="White"
+                                CornerRadius="0,0,4,4"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}">
+                                <ContentPresenter/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Slimmer, taller textboxes with extra row spacing -->
+        <Style TargetType="TextBox">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="MinWidth" Value="200"/>
+            <Setter Property="Margin" Value="0,5"/>
+        </Style>
+
+        <!-- Slimmer datepickers with extra row spacing -->
+        <Style TargetType="DatePicker">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="0,5"/>
+        </Style>
+    </Window.Resources>
+
+    <DockPanel>
+        <!-- Left Sidebar (unchanged) -->
+        <StackPanel DockPanel.Dock="Left"
+                    Width="60"
+                    Background="{StaticResource PrimaryBrush}">
+            <Button Style="{StaticResource SidebarButtonStyle}">
+                <TextBlock Text="🏎" FontSize="20" HorizontalAlignment="Center"/>
+            </Button>
+            <!-- …other sidebar icons… -->
         </StackPanel>
 
-        <!-- Birthday -->
-        <StackPanel Orientation="Horizontal" Margin="0,0,0,5" Grid.Row="1">
-            <Label Width="80">Birthday:</Label>
-            <DatePicker x:Name="BirthdayPicker" Width="250"/>
-        </StackPanel>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="20" Orientation="Vertical">
 
-        <!-- Occupation -->
-        <StackPanel Orientation="Horizontal" Margin="0,0,0,5" Grid.Row="2">
-            <Label Width="80">Occupation:</Label>
-            <TextBox x:Name="OccupationTextBox" Width="250"/>
-        </StackPanel>
+                <!-- === GAGE STATUS === -->
+                <GroupBox Header="GAGE STATUS"
+                          Style="{StaticResource HeaderedGroupBoxStyle}"
+                          Margin="0,0,0,20">
+                    <Grid Margin="0,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <!-- Status -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Calibrated by -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Last Calibration -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Next Calibration Due -->
+                        </Grid.RowDefinitions>
 
-        <!-- Save & Load Buttons -->
-        <StackPanel Orientation="Horizontal" Margin="0,10,0,10" Grid.Row="3">
-            <Button Content="Save to Database"
-                    Width="150" Height="30"
-                    Click="SaveButton_Click"/>
-            <Button Content="Load From Database"
-                    Width="150" Height="30"
-                    Margin="10,0,0,0"
-                    Click="LoadButton_Click"/>
-            <Button Content="Search"
-            Width="150" Height="30"
-            Margin="10,0,0,0"
-            Click="SearchButton_Click"/>
-            <Button x:Name="ModifyButton"
-          Content="Modify Selected"
-          Width="150" Height="30"
-          Margin="10,0,0,0"
-          Click="ModifyButton_Click"
-          IsEnabled="False"/>
+                        <!-- Status -->
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Status:" VerticalAlignment="Center"/>
+                        <RadioButton Grid.Row="0" Grid.Column="1" Content="Active"
+                                     Style="{StaticResource ToggleOptionStyle}"
+                                     IsChecked="True"
+                                     GroupName="StatusGroup" x:Name="StatusActiveRadio"/>
+                        <RadioButton Grid.Row="0" Grid.Column="2" Content="Inactive"
+                                     Style="{StaticResource ToggleOptionStyle}"
+                                     GroupName="StatusGroup" x:Name="StatusInactiveRadio"/>
 
-        </StackPanel>
+                        <!-- Calibrated by -->
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Calibrated by:" VerticalAlignment="Center"/>
+                        <TextBox    Grid.Row="1" Grid.Column="1" Width="150" x:Name="CalibratedByTextBox"/>
+                        <Button     Grid.Row="1" Grid.Column="2" Content="Add"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Click="AddCalibratedBy_Click"
+                                    x:Name="AddCalibratedByButton"/>
 
-        <Grid Grid.Row="4" Margin="2,0,0,2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="150"/>
-                <ColumnDefinition Width="120"/>
-                <ColumnDefinition Width="150"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Text="Name"
-               Grid.Column="0"
-               FontWeight="Bold"/>
-            <TextBlock Text="Birthday"
-               Grid.Column="1"
-               FontWeight="Bold"/>
-            <TextBlock Text="Occupation"
-               Grid.Column="2"
-               FontWeight="Bold"/>
-        </Grid>
+                        <!-- Last Calibration -->
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Last Calibration:" VerticalAlignment="Center"/>
+                        <DatePicker Grid.Row="2" Grid.Column="1" SelectedDateFormat="Short"
+                                    x:Name="LastCalibrationPicker"/>
 
-        <ListBox x:Name="PeopleListBox" Grid.Row="5" SelectionChanged="PeopleListBox_SelectionChanged">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Margin="2">
-                        <TextBlock Text="{Binding Name}" Width="150"/>
-                        <TextBlock Text="{Binding Birthday, StringFormat=d}" Width="120"/>
-                        <TextBlock Text="{Binding Occupation}" Width="150"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-    </Grid>
+                        <!-- Next Calibration Due -->
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Next Calibration Due:" VerticalAlignment="Center"/>
+                        <DatePicker Grid.Row="3" Grid.Column="1" SelectedDateFormat="Short"
+                                    x:Name="NextCalibrationPicker"/>
+                    </Grid>
+                </GroupBox>
+
+                <!-- === GAGE INFORMATION === -->
+                <GroupBox Header="GAGE INFORMATION"
+                          Style="{StaticResource HeaderedGroupBoxStyle}"
+                          Margin="0,0,0,20">
+                    <Grid Margin="0,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <!-- GageListID -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Created Date -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Internal Ident No -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Serial No -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Type -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Model No -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Manufacturer -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Unit System -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Units of Measure -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Range/Size -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Accuracy -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Reference Standard -->
+                        </Grid.RowDefinitions>
+
+                        <!-- GageListID -->
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="GageList ID:" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="Auto"
+                                   FontWeight="Bold" x:Name="GageListIdTextBlock"/>
+
+                        <!-- Created Date -->
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Created Date:" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" FontWeight="Bold" x:Name="CreatedDateTextBlock">
+                            <TextBlock.Text>
+                                <Binding Source="{x:Static sys:DateTime.Now}" StringFormat="{}{0:d}" />
+                            </TextBlock.Text>
+                        </TextBlock>
+
+                        <!-- Internal Ident No -->
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Internal Ident No:" VerticalAlignment="Center"/>
+                        <TextBox    Grid.Row="2" Grid.Column="1" x:Name="InternalIdentNoTextBox"/>
+
+                        <!-- Serial No -->
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Serial No:" VerticalAlignment="Center"/>
+                        <TextBox    Grid.Row="3" Grid.Column="1" x:Name="SerialNoTextBox"/>
+
+                        <!-- Type -->
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Type:" VerticalAlignment="Center"/>
+                        <TextBox    Grid.Row="4" Grid.Column="1" x:Name="TypeTextBox"/>
+                        <Button     Grid.Row="4" Grid.Column="2" Content="Add"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Click="AddType_Click"
+                                    x:Name="AddTypeButton"/>
+
+                        <!-- Model No -->
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Model No:" VerticalAlignment="Center"/>
+                        <TextBox    Grid.Row="5" Grid.Column="1" x:Name="ModelNoTextBox"/>
+
+                        <!-- Manufacturer -->
+                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Manufacturer:" VerticalAlignment="Center"/>
+                        <TextBox    Grid.Row="6" Grid.Column="1" x:Name="ManufacturerTextBox"/>
+                        <Button     Grid.Row="6" Grid.Column="2" Content="Add"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Click="AddManufacturer_Click"
+                                    x:Name="AddManufacturerButton"/>
+
+                        <!-- Unit System -->
+                        <TextBlock Grid.Row="7" Grid.Column="0" Text="Unit System:" VerticalAlignment="Center"/>
+                        <RadioButton Grid.Row="7" Grid.Column="1" Content="Metric"
+                                     Style="{StaticResource ToggleOptionStyle}"
+                                     IsChecked="True"
+                                     GroupName="UnitSystem"
+                                     x:Name="MetricRadio"/>
+                        <RadioButton Grid.Row="7" Grid.Column="2" Content="Imperial"
+                                     Style="{StaticResource ToggleOptionStyle}"
+                                     GroupName="UnitSystem"
+                                     x:Name="ImperialRadio"/>
+
+                        <!-- Units of Measure -->
+                        <TextBlock Grid.Row="8" Grid.Column="0" Text="Units Of Measure:" VerticalAlignment="Center"/>
+                        <TextBox    Grid.Row="8" Grid.Column="1" x:Name="UnitOfMeasureTextBox"/>
+                        <Button     Grid.Row="8" Grid.Column="2" Content="Add"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Click="AddUnitMeasure_Click"
+                                    x:Name="AddUnitMeasureButton"/>
+
+                        <!-- Range/Size -->
+                        <TextBlock Grid.Row="9" Grid.Column="0" Text="Range or Size:" VerticalAlignment="Center"/>
+                        <TextBox    Grid.Row="9" Grid.Column="1" x:Name="RangeSizeTextBox"/>
+
+                        <!-- Accuracy -->
+                        <TextBlock Grid.Row="10" Grid.Column="0" Text="Accuracy:" VerticalAlignment="Center"/>
+                        <TextBox    Grid.Row="10" Grid.Column="1" x:Name="AccuracyTextBox"/>
+
+                        <!-- Reference Standard -->
+                        <TextBlock Grid.Row="11" Grid.Column="0" Text="Reference Standard:" VerticalAlignment="Center"/>
+                        <RadioButton Grid.Row="11" Grid.Column="1" Content="Yes"
+                                     Style="{StaticResource ToggleOptionStyle}"
+                                     GroupName="RefStd"
+                                     x:Name="RefStdYesRadio"/>
+                        <RadioButton Grid.Row="11" Grid.Column="2" Content="No"
+                                     Style="{StaticResource ToggleOptionStyle}"
+                                     IsChecked="True"
+                                     GroupName="RefStd"
+                                     x:Name="RefStdNoRadio"/>
+                    </Grid>
+                </GroupBox>
+
+                <!-- === GAGE ASSIGNMENT === -->
+                <GroupBox Header="GAGE ASSIGNMENT"
+                          Style="{StaticResource HeaderedGroupBoxStyle}"
+                          Margin="0,0,0,20">
+                    <Grid Margin="0,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <!-- Owner -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Area -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Assignee -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Owner -->
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Owner:" VerticalAlignment="Center"/>
+                        <TextBox    Grid.Row="0" Grid.Column="1" x:Name="OwnerTextBox"/>
+                        <Button     Grid.Row="0" Grid.Column="2" Content="Add"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Click="AddOwner_Click"
+                                    x:Name="AddOwnerButton"/>
+
+                        <!-- Area -->
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Area:" VerticalAlignment="Center"/>
+                        <TextBox    Grid.Row="1" Grid.Column="1" x:Name="AreaTextBox"/>
+                        <Button     Grid.Row="1" Grid.Column="2" Content="Add"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Click="AddArea_Click"
+                                    x:Name="AddAreaButton"/>
+
+                        <!-- Assignee -->
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Assignee:" VerticalAlignment="Center"/>
+                        <TextBox    Grid.Row="2" Grid.Column="1" x:Name="AssigneeTextBox"/>
+                        <Button     Grid.Row="2" Grid.Column="2" Content="Add"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Click="AddAssignee_Click"
+                                    x:Name="AddAssigneeButton"/>
+                    </Grid>
+                </GroupBox>
+
+                <!-- === CALIBRATION INFORMATION === -->
+                <GroupBox Header="CALIBRATION INFORMATION"
+                          Style="{StaticResource HeaderedGroupBoxStyle}"
+                          Margin="0,0,0,20">
+                    <Grid Margin="0,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <!-- Interval -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Environment -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Reference item -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Attachments -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Interval -->
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Interval:" VerticalAlignment="Center"/>
+                        <ComboBox Grid.Row="0" Grid.Column="1" x:Name="IntervalComboBox">
+                            <ComboBoxItem>Before each use</ComboBoxItem>
+                            <ComboBoxItem>Beginning of each month</ComboBoxItem>
+                            <ComboBoxItem>6 months</ComboBoxItem>
+                            <ComboBoxItem>1 year</ComboBoxItem>
+                            <ComboBoxItem>2 years</ComboBoxItem>
+                            <ComboBoxItem>5 years</ComboBoxItem>
+                            <ComboBoxItem>10 years</ComboBoxItem>
+                        </ComboBox>
+
+                        <!-- Environment -->
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Environment:" VerticalAlignment="Center"/>
+                        <TextBox    Grid.Row="1" Grid.Column="1" x:Name="EnvironmentTextBox"/>
+                        <Button     Grid.Row="1" Grid.Column="2" Content="Add"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Click="AddEnvironment_Click"
+                                    x:Name="AddEnvironmentButton"/>
+
+                        <!-- Reference item -->
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Reference item:" VerticalAlignment="Center"/>
+                        <TextBox    Grid.Row="2" Grid.Column="1" x:Name="ReferenceItemTextBox"/>
+                        <Button     Grid.Row="2" Grid.Column="2" Content="Add"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Click="AddReferenceItem_Click"
+                                    x:Name="AddReferenceItemButton"/>
+
+                        <!-- Attachments -->
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Attachments:" VerticalAlignment="Center"/>
+                        <Button     Grid.Row="3" Grid.Column="1" Content="Upload File"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Click="UploadAttachment_Click"
+                                    x:Name="UploadAttachmentButton"/>
+                    </Grid>
+                </GroupBox>
+
+                <!-- === CALIBRATION HISTORY === -->
+                <GroupBox Header="CALIBRATION HISTORY"
+                          Style="{StaticResource HeaderedGroupBoxStyle}">
+                    <ListView x:Name="HistoryListView" Margin="0,5">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Date of Calibration"
+                                                DisplayMemberBinding="{Binding Date, StringFormat=d}"
+                                                Width="120"/>
+                                <GridViewColumn Header="Calibrated by"
+                                                DisplayMemberBinding="{Binding CalibratedBy}"
+                                                Width="100"/>
+                                <GridViewColumn Header="Range/Size"
+                                                DisplayMemberBinding="{Binding RangeOrSize}"
+                                                Width="80"/>
+                                <GridViewColumn Header="Reference item"
+                                                DisplayMemberBinding="{Binding ReferenceItem}"
+                                                Width="100"/>
+                                <GridViewColumn Header="Area"
+                                                DisplayMemberBinding="{Binding Area}"
+                                                Width="80"/>
+                                <GridViewColumn Header="Assignee"
+                                                DisplayMemberBinding="{Binding Assignee}"
+                                                Width="100"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </GroupBox>
+
+                <!-- Save Button -->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            Margin="0,20,0,0">
+                    <Button x:Name="SaveButton"
+                            Content="SAVE"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Width="100"
+                            Click="SaveButton_Click"/>
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
 </Window>
