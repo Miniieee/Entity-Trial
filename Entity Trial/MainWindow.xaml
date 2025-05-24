@@ -52,6 +52,12 @@
             Width="150" Height="30"
             Margin="10,0,0,0"
             Click="SearchButton_Click"/>
+            <Button x:Name="ModifyButton"
+          Content="Modify Selected"
+          Width="150" Height="30"
+          Margin="10,0,0,0"
+          Click="ModifyButton_Click"
+          IsEnabled="False"/>
 
         </StackPanel>
 
@@ -72,7 +78,7 @@
                FontWeight="Bold"/>
         </Grid>
 
-        <ListBox x:Name="PeopleListBox" Grid.Row="5">
+        <ListBox x:Name="PeopleListBox" Grid.Row="5" SelectionChanged="PeopleListBox_SelectionChanged">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="2">

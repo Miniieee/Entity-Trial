@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using Microsoft.EntityFrameworkCore;
+using System.Windows.Controls;
 
 namespace Entity_Trial
 {
@@ -11,9 +13,12 @@ namespace Entity_Trial
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly ObservableCollection<Person> _people = new ObservableCollection<Person>();
+
         public MainWindow()
         {
             InitializeComponent();
+            PeopleListBox.ItemsSource = _people;
             Loaded += MainWindow_Loaded;
         }
 
@@ -24,7 +29,6 @@ namespace Entity_Trial
                 await Task.Run(() =>
                 {
                     using var ctx = new AppDbContext();
-                    // Creates the DB + tables if they don't exist
                     ctx.Database.EnsureCreated();
                 });
             }
@@ -35,26 +39,11 @@ namespace Entity_Trial
         }
 
         private async void LoadButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                using var ctx = new AppDbContext();
-                var list = await ctx.People
-                                     .OrderBy(p => p.Id)
-                                     .ToListAsync();
-
-                PeopleListBox.ItemsSource = list;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Load failed: " + ex.Message);
-            }
-        }
+            => await ReloadPeopleAsync();
 
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(NameTextBox.Text)
-                || BirthdayPicker.SelectedDate is null)
+            if (string.IsNullOrWhiteSpace(NameTextBox.Text) || BirthdayPicker.SelectedDate is null)
             {
                 MessageBox.Show("Name and Birthday are required.");
                 return;
@@ -72,12 +61,8 @@ namespace Entity_Trial
                 using var ctx = new AppDbContext();
                 ctx.People.Add(person);
                 await ctx.SaveChangesAsync();
-
-                // Clear inputs
-                NameTextBox.Clear();
-                BirthdayPicker.SelectedDate = null;
-                OccupationTextBox.Clear();
-
+                await ReloadPeopleAsync();
+                ClearInputs();
             }
             catch (Exception ex)
             {
@@ -88,7 +73,6 @@ namespace Entity_Trial
         private async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
             var searchTerm = NameTextBox.Text.Trim();
-
             if (string.IsNullOrWhiteSpace(searchTerm))
             {
                 MessageBox.Show("Please enter a name to search for.");
@@ -103,7 +87,9 @@ namespace Entity_Trial
                                        .OrderBy(p => p.Id)
                                        .ToListAsync();
 
-                PeopleListBox.ItemsSource = results;
+                _people.Clear();
+                foreach (var p in results)
+                    _people.Add(p);
             }
             catch (Exception ex)
             {
@@ -111,5 +97,83 @@ namespace Entity_Trial
             }
         }
 
+        private void PeopleListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (PeopleListBox.SelectedItem is Person selected)
+            {
+                NameTextBox.Text = selected.Name;
+                BirthdayPicker.SelectedDate = selected.Birthday;
+                OccupationTextBox.Text = selected.Occupation;
+                ModifyButton.IsEnabled = true;
+            }
+            else
+            {
+                ClearInputs();
+                ModifyButton.IsEnabled = false;
+            }
+        }
+
+        private async void ModifyButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (PeopleListBox.SelectedItem is not Person selected)
+            {
+                MessageBox.Show("Please select a person to modify.");
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(NameTextBox.Text) || BirthdayPicker.SelectedDate is null)
+            {
+                MessageBox.Show("Name and Birthday are required.");
+                return;
+            }
+
+            try
+            {
+                using var ctx = new AppDbContext();
+                var person = await ctx.People.FindAsync(selected.Id);
+                if (person is null)
+                {
+                    MessageBox.Show("That record no longer exists.");
+                    return;
+                }
+
+                person.Name = NameTextBox.Text.Trim();
+                person.Birthday = BirthdayPicker.SelectedDate.Value;
+                person.Occupation = OccupationTextBox.Text.Trim();
+
+                await ctx.SaveChangesAsync();
+                MessageBox.Show("Record updated!");
+
+                await ReloadPeopleAsync();
+                ClearInputs();
+                PeopleListBox.SelectedItem = null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Modify failed: " + ex.Message);
+            }
+        }
+
+        private async Task ReloadPeopleAsync()
+        {
+            try
+            {
+                using var ctx = new AppDbContext();
+                var list = await ctx.People.OrderBy(p => p.Id).ToListAsync();
+                _people.Clear();
+                foreach (var p in list)
+                    _people.Add(p);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Load failed: " + ex.Message);
+            }
+        }
+
+        private void ClearInputs()
+        {
+            NameTextBox.Clear();
+            BirthdayPicker.SelectedDate = null;
+            OccupationTextBox.Clear();
+        }
     }
 }
