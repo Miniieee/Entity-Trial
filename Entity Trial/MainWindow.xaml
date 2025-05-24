@@ -21,7 +21,7 @@
             <Setter Property="Height" Value="40"/>
         </Style>
 
-        <!-- SELECT / ADD IMAGE buttons -->
+        <!-- Primary action buttons (Add, Save, Upload, etc.) -->
         <Style x:Key="PrimaryButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
             <Setter Property="Foreground" Value="White"/>
@@ -34,17 +34,17 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}"
-                            CornerRadius="4">
+                                CornerRadius="4">
                             <ContentPresenter HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"/>
+                                              VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
 
-        <!-- Yes/No & Metric/Imperial toggle buttons -->
-        <Style x:Key="ToggleOptionStyle" TargetType="ToggleButton">
+        <!-- Generic toggle look for RadioButton-->
+        <Style x:Key="ToggleOptionStyle" TargetType="RadioButton">
             <Setter Property="MinWidth" Value="50"/>
             <Setter Property="Height" Value="30"/>
             <Setter Property="Margin" Value="5,0,0,0"/>
@@ -54,14 +54,14 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="ToggleButton">
+                    <ControlTemplate TargetType="RadioButton">
                         <Border x:Name="Bd"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="4">
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
                             <ContentPresenter HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"/>
+                                              VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
@@ -75,7 +75,7 @@
             </Setter>
         </Style>
 
-        <!-- GroupBoxes with colored header and white content -->
+        <!-- GroupBoxes with colored header & white content -->
         <Style x:Key="HeaderedGroupBoxStyle" TargetType="GroupBox">
             <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
@@ -91,21 +91,21 @@
 
                             <!-- Header -->
                             <Border Background="{StaticResource PrimaryBrush}"
-                                CornerRadius="4,4,0,0"
-                                Padding="8,4">
+                                    CornerRadius="4,4,0,0"
+                                    Padding="8,4">
                                 <Label Content="{TemplateBinding Header}"
-                                   Foreground="White"
-                                   FontWeight="Bold"
-                                   Background="Transparent"/>
+                                       Foreground="White"
+                                       FontWeight="Bold"
+                                       Background="Transparent"/>
                             </Border>
 
-                            <!-- Content area -->
+                            <!-- Content -->
                             <Border Grid.Row="1"
-                                Background="White"
-                                CornerRadius="0,0,4,4"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                Padding="{TemplateBinding Padding}">
+                                    Background="White"
+                                    CornerRadius="0,0,4,4"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    Padding="{TemplateBinding Padding}">
                                 <ContentPresenter/>
                             </Border>
                         </Grid>
@@ -114,14 +114,13 @@
             </Setter>
         </Style>
 
-        <!-- Slimmer, taller textboxes with extra row spacing -->
+        <!-- TextBoxes -->
         <Style TargetType="TextBox">
             <Setter Property="Height" Value="30"/>
             <Setter Property="MinWidth" Value="200"/>
             <Setter Property="Margin" Value="0,5"/>
         </Style>
-
-        <!-- Slimmer datepickers with extra row spacing -->
+        <!-- DatePickers -->
         <Style TargetType="DatePicker">
             <Setter Property="Height" Value="30"/>
             <Setter Property="Margin" Value="0,5"/>
@@ -129,7 +128,7 @@
     </Window.Resources>
 
     <DockPanel>
-        <!-- Left Sidebar (unchanged) -->
+        <!-- Left Sidebar -->
         <StackPanel DockPanel.Dock="Left"
                     Width="60"
                     Background="{StaticResource PrimaryBrush}">
@@ -142,11 +141,11 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="20" Orientation="Vertical">
 
-                <!-- === GAGE STATUS === -->
+                <!-- GAGE STATUS -->
                 <GroupBox Header="GAGE STATUS"
                           Style="{StaticResource HeaderedGroupBoxStyle}"
                           Margin="0,0,0,20">
-                    <Grid Margin="0,5">
+                    <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="200"/>
                             <ColumnDefinition Width="Auto"/>
@@ -155,162 +154,167 @@
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
-                            <!-- Status -->
                             <RowDefinition Height="Auto"/>
-                            <!-- Calibrated by -->
                             <RowDefinition Height="Auto"/>
-                            <!-- Last Calibration -->
                             <RowDefinition Height="Auto"/>
-                            <!-- Next Calibration Due -->
                         </Grid.RowDefinitions>
 
-                        <!-- Status -->
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="Status:" VerticalAlignment="Center"/>
                         <RadioButton Grid.Row="0" Grid.Column="1" Content="Active"
                                      Style="{StaticResource ToggleOptionStyle}"
                                      IsChecked="True"
-                                     GroupName="StatusGroup" x:Name="StatusActiveRadio"/>
+                                     GroupName="Status" x:Name="StatusActiveRadio"/>
                         <RadioButton Grid.Row="0" Grid.Column="2" Content="Inactive"
                                      Style="{StaticResource ToggleOptionStyle}"
-                                     GroupName="StatusGroup" x:Name="StatusInactiveRadio"/>
+                                     GroupName="Status" x:Name="StatusInactiveRadio"/>
 
-                        <!-- Calibrated by -->
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Calibrated by:" VerticalAlignment="Center"/>
                         <TextBox    Grid.Row="1" Grid.Column="1" Width="150" x:Name="CalibratedByTextBox"/>
                         <Button     Grid.Row="1" Grid.Column="2" Content="Add"
                                     Style="{StaticResource PrimaryButtonStyle}"
-                                    Click="AddCalibratedBy_Click"
-                                    x:Name="AddCalibratedByButton"/>
+                                    Click="AddCalibratedBy_Click"/>
 
-                        <!-- Last Calibration -->
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Last Calibration:" VerticalAlignment="Center"/>
-                        <DatePicker Grid.Row="2" Grid.Column="1" SelectedDateFormat="Short"
-                                    x:Name="LastCalibrationPicker"/>
+                        <DatePicker Grid.Row="2" Grid.Column="1" x:Name="LastCalibrationPicker"/>
 
-                        <!-- Next Calibration Due -->
                         <TextBlock Grid.Row="3" Grid.Column="0" Text="Next Calibration Due:" VerticalAlignment="Center"/>
-                        <DatePicker Grid.Row="3" Grid.Column="1" SelectedDateFormat="Short"
-                                    x:Name="NextCalibrationPicker"/>
+                        <DatePicker Grid.Row="3" Grid.Column="1" x:Name="NextCalibrationPicker"/>
                     </Grid>
                 </GroupBox>
 
-                <!-- === GAGE INFORMATION === -->
+                <!-- GAGE INFORMATION -->
                 <GroupBox Header="GAGE INFORMATION"
                           Style="{StaticResource HeaderedGroupBoxStyle}"
                           Margin="0,0,0,20">
-                    <Grid Margin="0,5">
+                    <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="3*"/>
                             <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <!-- GageListID -->
-                            <RowDefinition Height="Auto"/>
-                            <!-- Created Date -->
-                            <RowDefinition Height="Auto"/>
-                            <!-- Internal Ident No -->
-                            <RowDefinition Height="Auto"/>
-                            <!-- Serial No -->
-                            <RowDefinition Height="Auto"/>
-                            <!-- Type -->
-                            <RowDefinition Height="Auto"/>
-                            <!-- Model No -->
-                            <RowDefinition Height="Auto"/>
-                            <!-- Manufacturer -->
-                            <RowDefinition Height="Auto"/>
-                            <!-- Unit System -->
-                            <RowDefinition Height="Auto"/>
-                            <!-- Units of Measure -->
-                            <RowDefinition Height="Auto"/>
-                            <!-- Range/Size -->
-                            <RowDefinition Height="Auto"/>
-                            <!-- Accuracy -->
-                            <RowDefinition Height="Auto"/>
-                            <!-- Reference Standard -->
-                        </Grid.RowDefinitions>
 
-                        <!-- GageListID -->
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="GageList ID:" VerticalAlignment="Center"/>
-                        <TextBlock Grid.Row="0" Grid.Column="1" Text="Auto"
-                                   FontWeight="Bold" x:Name="GageListIdTextBlock"/>
+                        <!-- Left: fields -->
+                        <Grid Grid.Column="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                        <!-- Created Date -->
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Created Date:" VerticalAlignment="Center"/>
-                        <TextBlock Grid.Row="1" Grid.Column="1" FontWeight="Bold" x:Name="CreatedDateTextBlock">
-                            <TextBlock.Text>
-                                <Binding Source="{x:Static sys:DateTime.Now}" StringFormat="{}{0:d}" />
-                            </TextBlock.Text>
-                        </TextBlock>
+                            <TextBlock  Grid.Row="0" Grid.Column="0" Text="GageList ID:" VerticalAlignment="Center"/>
+                            <TextBlock  Grid.Row="0" Grid.Column="1" Text="Auto"
+                                        FontWeight="Bold" x:Name="GageListIdTextBlock"/>
 
-                        <!-- Internal Ident No -->
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Internal Ident No:" VerticalAlignment="Center"/>
-                        <TextBox    Grid.Row="2" Grid.Column="1" x:Name="InternalIdentNoTextBox"/>
+                            <TextBlock  Grid.Row="1" Grid.Column="0" Text="Created Date:" VerticalAlignment="Center"/>
+                            <TextBlock  Grid.Row="1" Grid.Column="1" FontWeight="Bold" x:Name="CreatedDateTextBlock">
+                                <TextBlock.Text>
+                                    <Binding Source="{x:Static sys:DateTime.Now}" StringFormat="{}{0:d}"/>
+                                </TextBlock.Text>
+                            </TextBlock>
 
-                        <!-- Serial No -->
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Serial No:" VerticalAlignment="Center"/>
-                        <TextBox    Grid.Row="3" Grid.Column="1" x:Name="SerialNoTextBox"/>
+                            <TextBlock  Grid.Row="2" Grid.Column="0" Text="Internal Ident No:" VerticalAlignment="Center"/>
+                            <TextBox     Grid.Row="2" Grid.Column="1" x:Name="InternalIdentNoTextBox"/>
 
-                        <!-- Type -->
-                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Type:" VerticalAlignment="Center"/>
-                        <TextBox    Grid.Row="4" Grid.Column="1" x:Name="TypeTextBox"/>
-                        <Button     Grid.Row="4" Grid.Column="2" Content="Add"
+                            <TextBlock  Grid.Row="3" Grid.Column="0" Text="Serial No:" VerticalAlignment="Center"/>
+                            <TextBox     Grid.Row="3" Grid.Column="1" x:Name="SerialNoTextBox"/>
+
+                            <TextBlock  Grid.Row="4" Grid.Column="0" Text="Type:" VerticalAlignment="Center"/>
+                            <TextBox     Grid.Row="4" Grid.Column="1" x:Name="TypeTextBox"/>
+                            <Button      Grid.Row="4" Grid.Column="2" Content="Add"
+                                         Style="{StaticResource PrimaryButtonStyle}"
+                                         Click="AddType_Click"/>
+
+                            <TextBlock  Grid.Row="5" Grid.Column="0" Text="Model No:" VerticalAlignment="Center"/>
+                            <TextBox     Grid.Row="5" Grid.Column="1" x:Name="ModelNoTextBox"/>
+
+                            <TextBlock  Grid.Row="6" Grid.Column="0" Text="Manufacturer:" VerticalAlignment="Center"/>
+                            <TextBox     Grid.Row="6" Grid.Column="1" x:Name="ManufacturerTextBox"/>
+                            <Button      Grid.Row="6" Grid.Column="2" Content="Add"
+                                         Style="{StaticResource PrimaryButtonStyle}"
+                                         Click="AddManufacturer_Click"/>
+
+                            <TextBlock  Grid.Row="7" Grid.Column="0" Text="Unit System:" VerticalAlignment="Center"/>
+                            <RadioButton Grid.Row="7" Grid.Column="1" Content="Metric"
+                                         Style="{StaticResource ToggleOptionStyle}"
+                                         IsChecked="True"
+                                         GroupName="UnitSystem"/>
+                            <RadioButton Grid.Row="7" Grid.Column="2" Content="Imperial"
+                                         Style="{StaticResource ToggleOptionStyle}"
+                                         GroupName="UnitSystem"/>
+
+                            <TextBlock  Grid.Row="8" Grid.Column="0" Text="Units Of Measure:" VerticalAlignment="Center"/>
+                            <TextBox     Grid.Row="8" Grid.Column="1" x:Name="UnitOfMeasureTextBox"/>
+                            <Button      Grid.Row="8" Grid.Column="2" Content="Add"
+                                         Style="{StaticResource PrimaryButtonStyle}"
+                                         Click="AddUnitMeasure_Click"/>
+
+                            <TextBlock  Grid.Row="9" Grid.Column="0" Text="Range or Size:" VerticalAlignment="Center"/>
+                            <TextBox     Grid.Row="9" Grid.Column="1" x:Name="RangeSizeTextBox"/>
+
+                            <TextBlock  Grid.Row="10" Grid.Column="0" Text="Accuracy:" VerticalAlignment="Center"/>
+                            <TextBox     Grid.Row="10" Grid.Column="1" x:Name="AccuracyTextBox"/>
+
+                            <TextBlock  Grid.Row="11" Grid.Column="0" Text="Reference Standard:" VerticalAlignment="Center"/>
+                            <RadioButton Grid.Row="11" Grid.Column="1" Content="Yes"
+                                         Style="{StaticResource ToggleOptionStyle}"
+                                         GroupName="RefStd"/>
+                            <RadioButton Grid.Row="11" Grid.Column="2" Content="No"
+                                         Style="{StaticResource ToggleOptionStyle}"
+                                         IsChecked="True"
+                                         GroupName="RefStd"/>
+                        </Grid>
+
+                        <!-- Right: image upload -->
+                        <Grid Grid.Column="1" Margin="10">
+                            <Rectangle  
+                                Stroke="{StaticResource PrimaryBrush}"
+                                StrokeThickness="2"
+                                RadiusX="5" RadiusY="5"
+                                StrokeDashArray="4,2"
+                                Fill="Transparent"
+                                Height="250"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"/>
+
+                            <StackPanel
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                IsHitTestVisible="False"
+                                Height="250">
+                                <TextBlock Text="🖼"
+                                           FontSize="48"
+                                           Opacity="0.3"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock Text="Click to upload an image or drag it here."
+                                           Margin="5,2"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock Text="Only PNG &amp; JPEG allowed. &lt;1 MB"
+                                           FontSize="10"
+                                           Opacity="0.7"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+
+                            <Button Content="ADD IMAGE"
                                     Style="{StaticResource PrimaryButtonStyle}"
-                                    Click="AddType_Click"
-                                    x:Name="AddTypeButton"/>
-
-                        <!-- Model No -->
-                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Model No:" VerticalAlignment="Center"/>
-                        <TextBox    Grid.Row="5" Grid.Column="1" x:Name="ModelNoTextBox"/>
-
-                        <!-- Manufacturer -->
-                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Manufacturer:" VerticalAlignment="Center"/>
-                        <TextBox    Grid.Row="6" Grid.Column="1" x:Name="ManufacturerTextBox"/>
-                        <Button     Grid.Row="6" Grid.Column="2" Content="Add"
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    Click="AddManufacturer_Click"
-                                    x:Name="AddManufacturerButton"/>
-
-                        <!-- Unit System -->
-                        <TextBlock Grid.Row="7" Grid.Column="0" Text="Unit System:" VerticalAlignment="Center"/>
-                        <RadioButton Grid.Row="7" Grid.Column="1" Content="Metric"
-                                     Style="{StaticResource ToggleOptionStyle}"
-                                     IsChecked="True"
-                                     GroupName="UnitSystem"
-                                     x:Name="MetricRadio"/>
-                        <RadioButton Grid.Row="7" Grid.Column="2" Content="Imperial"
-                                     Style="{StaticResource ToggleOptionStyle}"
-                                     GroupName="UnitSystem"
-                                     x:Name="ImperialRadio"/>
-
-                        <!-- Units of Measure -->
-                        <TextBlock Grid.Row="8" Grid.Column="0" Text="Units Of Measure:" VerticalAlignment="Center"/>
-                        <TextBox    Grid.Row="8" Grid.Column="1" x:Name="UnitOfMeasureTextBox"/>
-                        <Button     Grid.Row="8" Grid.Column="2" Content="Add"
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    Click="AddUnitMeasure_Click"
-                                    x:Name="AddUnitMeasureButton"/>
-
-                        <!-- Range/Size -->
-                        <TextBlock Grid.Row="9" Grid.Column="0" Text="Range or Size:" VerticalAlignment="Center"/>
-                        <TextBox    Grid.Row="9" Grid.Column="1" x:Name="RangeSizeTextBox"/>
-
-                        <!-- Accuracy -->
-                        <TextBlock Grid.Row="10" Grid.Column="0" Text="Accuracy:" VerticalAlignment="Center"/>
-                        <TextBox    Grid.Row="10" Grid.Column="1" x:Name="AccuracyTextBox"/>
-
-                        <!-- Reference Standard -->
-                        <TextBlock Grid.Row="11" Grid.Column="0" Text="Reference Standard:" VerticalAlignment="Center"/>
-                        <RadioButton Grid.Row="11" Grid.Column="1" Content="Yes"
-                                     Style="{StaticResource ToggleOptionStyle}"
-                                     GroupName="RefStd"
-                                     x:Name="RefStdYesRadio"/>
-                        <RadioButton Grid.Row="11" Grid.Column="2" Content="No"
-                                     Style="{StaticResource ToggleOptionStyle}"
-                                     IsChecked="True"
-                                     GroupName="RefStd"
-                                     x:Name="RefStdNoRadio"/>
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    Margin="0,0,10,235"
+                                    Click="UploadAttachment_Click"
+                                    x:Name="UploadImageButton"/>
+                        </Grid>
                     </Grid>
                 </GroupBox>
 
